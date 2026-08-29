@@ -667,14 +667,20 @@ p {
   color: var(--c-gold);
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  transition: gap var(--dur-hover) var(--ease-out), color var(--dur-hover) ease;
+  gap: 6px;
+  transition: color var(--dur-hover) ease;
+}
+
+.card-listing .detail-link i {
+  transition: transform var(--dur-hover) var(--ease-out);
 }
 
 @media (hover: hover) and (pointer: fine) {
   .card-listing .detail-link:hover {
-    gap: 8px;
     color: var(--c-gold-light);
+  }
+  .card-listing .detail-link:hover i {
+    transform: translateX(3px);
   }
 }
 
@@ -1081,6 +1087,15 @@ p {
 @media (prefers-reduced-motion: reduce) {
   [data-reveal] {
     transition: opacity 300ms ease;
+    transform: none;
+  }
+
+  /* Keep the color/border feedback on hover and press (it aids
+     comprehension), drop the movement: lift, scale, slide, zoom. */
+  .btn:active,
+  .card-listing:hover,
+  .card-listing:hover .thumb img,
+  .card-listing .detail-link:hover i {
     transform: none;
   }
 }
