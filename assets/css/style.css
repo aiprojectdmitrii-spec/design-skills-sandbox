@@ -318,37 +318,12 @@ p {
   }
 }
 
-/* Icon-only call button for mobile/tablet, where nav-phone's text label is
-   hidden. Uses an inline SVG (not the CDN icon font) so it never renders
-   as an empty tap target if that CDN is slow or blocked. */
-.nav-call {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 42px;
-  height: 42px;
-  border-radius: var(--r-pill);
-  border: 1px solid var(--c-border-strong);
-  color: var(--c-text);
-  transition: border-color var(--dur-hover) ease, color var(--dur-hover) ease;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .nav-call:hover {
-    border-color: var(--c-gold);
-    color: var(--c-gold-light);
-  }
-}
-
 @media (min-width: 1024px) {
   .nav-links {
     display: flex;
   }
   .nav-phone {
     display: inline-flex;
-  }
-  .nav-call {
-    display: none;
   }
 }
 
