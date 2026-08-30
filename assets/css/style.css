@@ -1072,6 +1072,18 @@ p {
   font-size: 0.8125rem;
 }
 
+.footer-side-link {
+  color: var(--c-text-faint);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: color 0.18s ease, border-color 0.18s ease;
+}
+
+.footer-side-link:hover {
+  color: var(--c-text-muted);
+  border-color: var(--c-border-strong);
+}
+
 /* ==========================================================================
    Scroll reveal (Kowalski build: transform + opacity only, staggered by
    position within its parent, capped, strong ease-out, reduced-motion safe)
