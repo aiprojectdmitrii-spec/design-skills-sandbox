@@ -29,7 +29,7 @@
   /* shadow, tinted to the ink hue */
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
   --shadow-md: 0 20px 48px -18px rgba(0, 0, 0, 0.7);
-  --shadow-accent: 0 14px 32px -14px rgba(226, 130, 63, 0.38);
+  --shadow-accent: 0 10px 24px -12px rgba(0, 0, 0, 0.65);
 
   /* type */
   --font-display: "Sora", "Helvetica Neue", Arial, sans-serif;
@@ -117,22 +117,33 @@ p {
    transform + opacity only, ease-out, staggered via transition-delay
    ========================================================================== */
 
+/* .reveal starts fully visible: content must not depend on JavaScript to
+   exist. The hidden pre-animation state is opt-in, added only once main.js
+   confirms it's running (see the `.js` class on <html>), so no-JS, crawlers
+   and print always get the complete page. */
 .reveal {
-  opacity: 0;
-  transform: translateY(22px);
   transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
   will-change: transform, opacity;
 }
 
-.reveal.is-visible {
+html.js .reveal {
+  opacity: 0;
+  transform: translateY(22px);
+}
+
+html.js .reveal.is-visible {
   opacity: 1;
   transform: translateY(0);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .reveal {
+  html.js .reveal {
+    opacity: 0;
     transform: none;
     transition: opacity 0.4s ease;
+  }
+  html.js .reveal.is-visible {
+    opacity: 1;
   }
 }
 
@@ -147,10 +158,21 @@ p {
   height: var(--nav-h);
   display: flex;
   align-items: center;
+  border-bottom: 1px solid var(--c-border);
+}
+
+/* Blur lives on a pseudo-element, not on .nav itself: backdrop-filter on an
+   ancestor creates a new containing block for fixed descendants, which
+   would trap the mobile .nav__links panel inside .nav's own 72px height
+   instead of the viewport. */
+.nav::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
   background: rgba(16, 17, 20, 0.82);
   backdrop-filter: blur(14px) saturate(140%);
   -webkit-backdrop-filter: blur(14px) saturate(140%);
-  border-bottom: 1px solid var(--c-border);
 }
 
 .nav__row {
@@ -197,6 +219,10 @@ p {
 
 .nav__links a:hover {
   color: var(--c-text);
+}
+
+.nav__links a.is-current {
+  color: var(--c-accent-light);
 }
 
 .nav__toggle {
@@ -517,12 +543,13 @@ p {
   position: absolute;
   inset: 0;
   background: var(--c-accent);
-  width: 0%;
-  transition: width 1.4s var(--ease-out);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 1.4s var(--ease-out);
 }
 
 .pipeline-nodes__line-fill.is-visible {
-  width: 100%;
+  transform: scaleX(1);
 }
 
 .pipeline-node {
@@ -591,11 +618,11 @@ p {
     height: auto;
   }
   .pipeline-nodes__line-fill {
-    width: 100%;
-    height: 0%;
+    transform: scaleY(0);
+    transform-origin: top center;
   }
   .pipeline-nodes__line-fill.is-visible {
-    height: 100%;
+    transform: scaleY(1);
   }
   .pipeline-node {
     flex-direction: row;
@@ -725,15 +752,65 @@ p {
   border: 1px solid var(--c-border);
   border-radius: var(--r-card);
   padding: 32px;
-  min-height: 320px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .visual-card svg {
   width: 100%;
   height: auto;
+}
+
+/* Script-beats card: an honest breakdown of what Claude actually outputs
+   for module 1, not a fake app screenshot. */
+.script-card__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--c-border);
+  margin-bottom: 24px;
+}
+
+.script-card__head span:first-child {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.script-card__count {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  color: var(--c-text-faint);
+}
+
+.script-beat {
+  display: grid;
+  grid-template-columns: 76px 1fr;
+  gap: 18px;
+  padding: 16px 0;
+}
+
+.script-beat + .script-beat {
+  border-top: 1px solid var(--c-border);
+}
+
+.script-beat__time {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  color: var(--c-accent-light);
+  padding-top: 2px;
+}
+
+.script-beat__name {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 15.5px;
+}
+
+.script-beat__note {
+  margin-top: 4px;
+  font-size: 13.5px;
+  color: var(--c-text-muted);
+  line-height: 1.5;
 }
 
 @media (max-width: 900px) {
@@ -777,9 +854,9 @@ p {
 
 .bento-card--feature {
   min-height: 400px;
-  background:
-    radial-gradient(circle at 20% 15%, rgba(226, 130, 63, 0.28), transparent 55%),
-    var(--c-bg-elev-2);
+  background-color: var(--c-bg-elev-2);
+  background-image: radial-gradient(var(--c-border-strong) 1px, transparent 1.6px);
+  background-size: 20px 20px;
 }
 
 .bento-card--flat {
@@ -1042,16 +1119,11 @@ p {
   min-height: 260px;
 }
 
-.bento-card--telegram {
-  background:
-    radial-gradient(circle at 85% 20%, rgba(226, 130, 63, 0.22), transparent 60%),
-    var(--c-bg-elev-2);
-}
-
+.bento-card--telegram,
 .bento-card--instagram {
-  background:
-    radial-gradient(circle at 15% 80%, rgba(226, 130, 63, 0.22), transparent 60%),
-    var(--c-bg-elev-2);
+  background-color: var(--c-bg-elev-2);
+  background-image: radial-gradient(var(--c-border-strong) 1px, transparent 1.6px);
+  background-size: 20px 20px;
 }
 
 @media (max-width: 720px) {
