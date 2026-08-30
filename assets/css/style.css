@@ -455,13 +455,37 @@ p {
   margin-bottom: 2px;
 }
 
-.hero-visual figure {
-  background: linear-gradient(180deg, transparent 55%, rgba(0, 0, 0, 0.55) 100%);
+/* Photo-pending state: same frame/aspect-ratio as the real photo will use,
+   so dropping the image in later doesn't reflow the layout. */
+.hero-visual figure.is-placeholder {
+  background: linear-gradient(155deg, var(--c-bg-elev-2), var(--c-bg-elev));
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.hero-visual figure img {
-  position: relative;
-  z-index: -1;
+.placeholder-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 0 32px;
+  text-align: center;
+  color: var(--c-text-faint);
+}
+
+.placeholder-content svg {
+  color: var(--c-gold);
+  opacity: 0.6;
+}
+
+.placeholder-content span {
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.hero-visual figure.is-placeholder figcaption {
+  text-shadow: none;
 }
 
 /* ==========================================================================
@@ -601,6 +625,13 @@ p {
 .card-listing .thumb {
   aspect-ratio: 4 / 3;
   overflow: hidden;
+}
+
+.card-listing .thumb.is-placeholder {
+  background: linear-gradient(155deg, var(--c-bg-elev-2), var(--c-bg-elev));
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .card-listing--featured .thumb {
